@@ -1,5 +1,6 @@
-import { loginByUsername, logout, getUserInfo } from '@/api/login'
+import { loginByUsername, logout, register, getUserInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import md5 from 'md5';
 
 const user = {
   state: {
@@ -55,6 +56,23 @@ const user = {
           resolve()
         }).catch(error => {
           reject(error)
+        })
+      })
+    },
+
+    //用户注册
+    registerByUserName({ commit }, userInfo) {
+      return new Promise((resolve, reject) => {
+        let { username, password, phone } = userInfo
+        register(username, md5(password + 'xmm'), phone).then(response => {
+          console.log('response', response)
+          if (response.data.code == 1) {
+            commit('SET_TOKEN', 'admin')
+            setToken('admin')
+            resolve()
+          } else {
+            reject(response.data.msg)
+          }
         })
       })
     },

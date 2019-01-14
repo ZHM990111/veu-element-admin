@@ -74,7 +74,9 @@ export default {
   },
   login: {
     title: '系统登录',
+    retitle: '系统注册',
     logIn: '登录',
+    register: '注册',
     username: '账号',
     password: '密码',
     any: '随便填',

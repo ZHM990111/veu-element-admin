@@ -74,7 +74,9 @@ export default {
   },
   login: {
     title: 'Formulario de acceso',
+    retitle: 'Formulario de register',
     logIn: 'Acceso',
+    register: 'Register',
     username: 'Usuario',
     password: 'Contraseña',
     any: 'nada',

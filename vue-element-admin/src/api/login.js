@@ -27,3 +27,13 @@ export function getUserInfo(token) {
   })
 }
 
+
+export function register(username, password, phone) {
+  return request({
+    url: '/users/register',
+    method: 'post',
+    data: {
+      username, password, phone
+    }
+  })
+}
