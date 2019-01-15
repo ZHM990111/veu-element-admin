@@ -141,7 +141,7 @@ export default {
             .then(res=>{
                 console.log('res',res)
                 this.$message({
-                message:'注册成功',
+                message:res,
                 center:true,
                 type:'success'
               })
