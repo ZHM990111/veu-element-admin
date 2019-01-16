@@ -8,7 +8,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="username" label="姓名" width="100"></el-table-column>
-      <el-table-column prop="propfile" label="简介" width="140"></el-table-column>
+      <el-table-column prop="profile" label="简介" width="140"></el-table-column>
       <el-table-column prop="phone" label="手机号" width="120"></el-table-column>
       <el-table-column prop="email" label="邮箱" width="100"></el-table-column>
       <el-table-column prop="address" label="地址" width="100"></el-table-column>
@@ -57,10 +57,10 @@
             width="30%"
             :before-close="handleClose"
           >
-            <span>这是一段信息</span>
+            <span>确认删除吗？</span>
             <span slot="footer" class="dialog-footer">
               <el-button @click="dialogVisible = false">取 消</el-button>
-              <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+              <el-button type="primary" @click="Delete(scope.$index, scope.row)">确 定</el-button>
             </span>
           </el-dialog>
         </template>
@@ -138,7 +138,8 @@ export default {
   methods: {
     ...mapActions({
       getUserList: "list/getUserList",
-      updateUserInfo: "list/updateUserInfo"
+      updateUserInfo: "list/updateUserInfo",
+      deleteUser: "list/deleteUser"
     }),
     handleEdit(index, row) {
       this.currentUser = row;
@@ -178,6 +179,7 @@ export default {
             phone,
             address
           } = this.currentUser;
+
           this.updateUserInfo({
             id,
             username,
@@ -204,6 +206,27 @@ export default {
             });
         }
       });
+    },
+    Delete(index, row) {
+      this.dialogVisible = false;
+      let { id } = row;
+      console.log(row.id);
+      this.deleteUser({uid:id})
+        .then(res => {
+          this.$message({
+            message: res,
+            center: true,
+            type: "success"
+          });
+          this.getUserList({ page: this.current });
+        })
+        .catch(error => {
+          this.$message({
+            message: error,
+            center: true,
+            type: "error"
+          });
+        });
     }
   }
 };
