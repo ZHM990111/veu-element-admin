@@ -1,4 +1,4 @@
-import { getUserList,updateUserInfo,deleteUser} from '@/api/user'
+import { getUserList,updateUserInfo,deleteUser,updateRolers} from '@/api/user'
 
 const state = {
     list: []
@@ -43,6 +43,20 @@ const actions = {
     deleteUser({commit},data){
         return new Promise((resolve,reject)=>{
             deleteUser(data).then(res=>{
+                if (res.data.code == 1) {
+                    resolve(res.data.msg)
+                } else {
+                    reject(res.data.msg)
+                } 
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+    //分配权限
+    updateRolers({commit},data){
+        return new Promise((resolve,reject)=>{
+            updateRolers(data).then(res=>{
                 if (res.data.code == 1) {
                     resolve(res.data.msg)
                 } else {

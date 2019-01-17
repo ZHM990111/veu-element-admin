@@ -26,6 +26,13 @@ import './permission' // permission control
 import './mock' // simulation data
 // 引入自定义过滤器
 import * as filters from './filters' // global filters
+// import Mock from 'mockjs'
+//引入自定义指令
+import './directive/permission/index';
+// Mock.mock(/\/login\/login2/, 'post', (res)=>{
+//   console.log(res)
+// })
+
 // 使用element-ui
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size

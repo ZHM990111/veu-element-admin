@@ -12,44 +12,20 @@
       <el-table-column prop="phone" label="手机号" width="120"></el-table-column>
       <el-table-column prop="email" label="邮箱" width="100"></el-table-column>
       <el-table-column prop="address" label="地址" width="100"></el-table-column>
+      <el-table-column prop="email" label="角色" width="100">
+        <template slot-scope="scope">
+          <el-tag :key="tag" style="margin-left:3px;" v-for="tag in scope.row.rolers">{{tag}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="address" label="权限" width="100">
+        <template slot-scope="scope">
+          <el-tag :key="tag" style="margin-left:3px;" v-for="tag in scope.row.access">{{tag}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
+          <el-button size="mini" @click="handleRoler(scope.$index, scope.row)">修改角色</el-button>
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-dialog title="编辑信息" :visible.sync="dialogFormVisible">
-            <el-form :model="currentUser" :rules="Rules" ref="form">
-              <el-form-item label="姓名" :label-width="formLabelWidth" prop="username">
-                <el-input v-model="currentUser.username"></el-input>
-              </el-form-item>
-              <el-form-item label="头像" :label-width="formLabelWidth">
-                <el-upload
-                  class="avatar-uploader"
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  :show-file-list="false"
-                  :on-success="handleAvatarSuccess"
-                  :before-upload="beforeAvatarUpload"
-                >
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </el-form-item>
-              <el-form-item label="简介" :label-width="formLabelWidth" prop="profile">
-                <el-input v-model="currentUser.profile"></el-input>
-              </el-form-item>
-              <el-form-item label="手机号" :label-width="formLabelWidth" prop="phone">
-                <el-input v-model="currentUser.phone"></el-input>
-              </el-form-item>
-              <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
-                <el-input v-model="currentUser.email"></el-input>
-              </el-form-item>
-              <el-form-item label="地址" :label-width="formLabelWidth" prop="address">
-                <el-input v-model="currentUser.address"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="Submit">确 定</el-button>
-            </div>
-          </el-dialog>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           <el-dialog
             title="提示"
@@ -73,6 +49,60 @@
       :total="100"
       style="margin-left:40%"
     ></el-pagination>
+    <el-dialog :title="roltype=='edit'?'编辑信息':'修改角色'" :visible.sync="dialogFormVisible">
+      <el-form :model="currentUser" :rules="Rules" ref="form">
+        <el-form-item
+          v-if="roltype=='edit'"
+          label="姓名"
+          :label-width="formLabelWidth"
+          prop="username"
+        >
+          <el-input v-model="currentUser.username"></el-input>
+        </el-form-item>
+        <el-form-item v-if="roltype=='edit'" label="头像" :label-width="formLabelWidth">
+          <el-upload
+            class="avatar-uploader"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item v-if="roltype=='edit'" label="简介" prop="profile">
+          <el-input v-model="currentUser.profile"></el-input>
+        </el-form-item>
+        <el-form-item v-if="roltype=='edit'" label="手机号" prop="phone">
+          <el-input v-model="currentUser.phone"></el-input>
+        </el-form-item>
+        <el-form-item v-if="roltype=='edit'" label="邮箱" prop="email">
+          <el-input v-model="currentUser.email"></el-input>
+        </el-form-item>
+        <el-form-item v-if="roltype=='edit'" label="地址" prop="address">
+          <el-input v-model="currentUser.address"></el-input>
+        </el-form-item>
+        <el-form-item v-if="roltype!='edit'" label="我的角色">
+          <el-tag
+            :key="tag"
+            v-for="tag in myRolers"
+            closable
+            :disable-transitions="false"
+            @close="RolerClose(tag)"
+          >{{tag}}</el-tag>
+        </el-form-item>
+        <el-form-item v-if="roltype!='edit'" label="全部角色">
+          <el-tag :key="tag" v-for="tag in rolers" closable :disable-transitions="false">
+            <span @click="addRoler(tag)">{{tag}}</span>
+          </el-tag>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="Submit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -124,7 +154,10 @@ export default {
         phone: [{ trigger: "blur", required: true, validator: phoneValidator }],
         email: [{ trigger: "blur", required: true, validator: emailValidator }],
         address: [{ trigger: "blur", required: true, message: "地址必填" }]
-      }
+      },
+      myRolers: [],
+      rolers: ["boss", "developer", "producter", "operator", "designer"],
+      roltype: "edit"
     };
   },
   computed: {
@@ -139,12 +172,27 @@ export default {
     ...mapActions({
       getUserList: "list/getUserList",
       updateUserInfo: "list/updateUserInfo",
-      deleteUser: "list/deleteUser"
+      deleteUser: "list/deleteUser",
+      updateRolers: "list/updateRolers"
     }),
     handleEdit(index, row) {
+      this.roltype = "edit";
       this.currentUser = row;
       this.dialogFormVisible = true;
-      console.log(index, row, this.currentUser);
+    },
+    handleRoler(index, row) {
+      this.roltype = "roler";
+      this.currentUser = { ...row };
+      this.myRolers = [...row.rolers];
+      this.dialogFormVisible = true;
+    },
+    addRoler(roler) {
+      this.myRolers.push(roler);
+      this.myRolers = [...new Set(this.myRolers)];
+    },
+    RolerClose(roler) {
+      let index = this.myRolers.findIndex(item => item == roler);
+      this.myRolers.splice(index, 1);
     },
     handleDelete(index, row) {
       this.dialogVisible = true;
@@ -168,50 +216,72 @@ export default {
     beforeAvatarUpload(file) {},
     Submit() {
       this.dialogFormVisible = false;
-      this.$refs.form.validate(valid => {
-        if (valid) {
-          console.log("current", this.currentUser);
-          let {
-            id,
-            username,
-            profile,
-            email,
-            phone,
-            address
-          } = this.currentUser;
+      if (this.roltype == "edit") {
+        this.$refs.form.validate(valid => {
+          if (valid) {
+            console.log("current", this.currentUser);
+            let {
+              id,
+              username,
+              profile,
+              email,
+              phone,
+              address
+            } = this.currentUser;
 
-          this.updateUserInfo({
-            id,
-            username,
-            profile,
-            email,
-            phone,
-            address
-          })
-            .then(res => {
-              console.log("res", res);
-              this.$message({
-                message: res,
-                center: true,
-                type: "success"
-              });
-              this.getUserList({ page: this.current });
+            this.updateUserInfo({
+              id,
+              username,
+              profile,
+              email,
+              phone,
+              address
             })
-            .catch(error => {
-              this.$message({
-                message: error,
-                center: true,
-                type: "error"
+              .then(res => {
+                console.log("res", res);
+                this.$message({
+                  message: res,
+                  center: true,
+                  type: "success"
+                });
+                this.getUserList({ page: this.current });
+              })
+              .catch(error => {
+                this.$message({
+                  message: error,
+                  center: true,
+                  type: "error"
+                });
               });
+          }
+        });
+      } else if(this.roltype == 'roler') {
+         let {id} = this.currentUser;
+          let rolersId = this.myRolers.map(item=>{
+            return this.rolers.findIndex(value=>value==item)+1
+          })
+          this.updateRolers({uid: id, rolersId}).then(res=>{
+            this.$message({
+              message: res,
+              center: true,
+              type: 'success'
             });
-        }
-      });
+            this.getUserList({page: this.current});
+          }).catch(err=>{
+            this.$message({
+              message: err,
+              center: true,
+              type: 'error'
+            });
+          })
+          this.showDialog = false;
+      }
     },
     Delete(index, row) {
       this.dialogVisible = false;
       let { id } = row;
       console.log(row.id);
-      this.deleteUser({uid:id})
+      this.deleteUser({ uid: id })
         .then(res => {
           this.$message({
             message: res,

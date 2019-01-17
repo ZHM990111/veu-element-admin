@@ -27,3 +27,12 @@ export function deleteUser(data) {
         data
     })
 }
+
+//修改角色
+export function updateRolers(data) {
+    return request({
+        url: '/users/action',
+        method: 'put',
+        data
+    })
+}

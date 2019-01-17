@@ -99,8 +99,8 @@ export default {
       }
     };
     const Username = (rule, value, callback) => {
-      if (value.length < 4) {
-        callback(new Error("用户名应大于4位"));
+      if (value.length < 2) {
+        callback(new Error("用户名应大于2位"));
       } else {
         callback();
       }
@@ -117,8 +117,8 @@ export default {
 
     return {
       loginForm: {
-        username: "admin",
-        password: "1111111"
+        username: "请输入用户名",
+        password: "请输入密码i"
       },
       loginRules: {
         username: [{ required: true, trigger: "blur", validator: Username }],
