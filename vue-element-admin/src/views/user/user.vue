@@ -7,6 +7,11 @@
           <img :src="scope.row.avatar" style="width:100%">
         </template>
       </el-table-column>
+      <el-table-column label="日期" width="100">
+        <template slot-scope="scope">
+           <span>{{scope.row.create_time | formateDate}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="username" label="姓名" width="100"></el-table-column>
       <el-table-column prop="profile" label="简介" width="140"></el-table-column>
       <el-table-column prop="phone" label="手机号" width="120"></el-table-column>
@@ -46,7 +51,7 @@
       @current-change="handleChange"
       :current-page="current"
       layout="prev, pager, next"
-      :total="100"
+      :total="500"
       style="margin-left:40%"
     ></el-pagination>
     <el-dialog :title="roltype=='edit'?'编辑信息':'修改角色'" :visible.sync="dialogFormVisible">
@@ -255,26 +260,28 @@ export default {
               });
           }
         });
-      } else if(this.roltype == 'roler') {
-         let {id} = this.currentUser;
-          let rolersId = this.myRolers.map(item=>{
-            return this.rolers.findIndex(value=>value==item)+1
-          })
-          this.updateRolers({uid: id, rolersId}).then(res=>{
+      } else if (this.roltype == "roler") {
+        let { id } = this.currentUser;
+        let rolersId = this.myRolers.map(item => {
+          return this.rolers.findIndex(value => value == item) + 1;
+        });
+        this.updateRolers({ uid: id, rolersId })
+          .then(res => {
             this.$message({
               message: res,
               center: true,
-              type: 'success'
+              type: "success"
             });
-            this.getUserList({page: this.current});
-          }).catch(err=>{
+            this.getUserList({ page: this.current });
+          })
+          .catch(err => {
             this.$message({
               message: err,
               center: true,
-              type: 'error'
+              type: "error"
             });
-          })
-          this.showDialog = false;
+          });
+        this.showDialog = false;
       }
     },
     Delete(index, row) {

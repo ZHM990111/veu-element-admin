@@ -1,6 +1,7 @@
 // set function parseTime,formatTime to filter
 export { parseTime, formatTime } from '@/utils'
 
+//复数加s
 function pluralize(time, label) {
   if (time === 1) {
     return time + label
@@ -37,6 +38,7 @@ export function numberFormatter(num, digits) {
   return num.toString()
 }
 
+//千分符
 export function toThousandFilter(num) {
   return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
 }
