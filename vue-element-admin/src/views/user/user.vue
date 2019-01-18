@@ -1,5 +1,12 @@
 <template>
   <div>
+    <el-button
+      :loading="downloadLoading"
+      style="margin:0 0 20px 20px;"
+      type="primary"
+      icon="document"
+      @click="ecalDownload"
+    >{{ $t('excel.export') }} Excel</el-button>
     <el-table :data="tableData" style="width: 100%">
       <el-table-column prop="id" label="ID" width="100"></el-table-column>
       <el-table-column label="头像" width="100">
@@ -142,6 +149,7 @@ export default {
       }
     };
     return {
+      downloadLoading: false,
       dialogVisible: false,
       dialogFormVisible: false,
       formLabelWidth: "120px",
@@ -173,6 +181,22 @@ export default {
     this.getUserList();
   },
   methods: {
+    ecalDownload() {
+      this.downloadLoading = true;
+      import("@/vendor/Export2Excel").then(excel => {
+        const tHeader = Object.keys(this.tableData[0]);
+        const data = this.tableData.map(item => {
+          return Object.values(item);
+        });
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: "用户信息",
+          autoWidth:'true',
+          bookType: "xlsx"
+        });
+      });
+    },
     ...mapActions({
       getUserList: "list/getUserList",
       updateUserInfo: "list/updateUserInfo",
@@ -292,7 +316,7 @@ export default {
       this.deleteUser({ uid: id })
         .then(res => {
           this.$message({
-            message: res, 
+            message: res,
             center: true,
             type: "success"
           });
