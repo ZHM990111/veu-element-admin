@@ -32,6 +32,9 @@ import './directive/permission/index';
 // Mock.mock(/\/login\/login2/, 'post', (res)=>{
 //   console.log(res)
 // })
+//引入e-charts
+import VCharts from 'v-charts'
+Vue.use(VCharts)
 
 // 使用element-ui
 Vue.use(Element, {

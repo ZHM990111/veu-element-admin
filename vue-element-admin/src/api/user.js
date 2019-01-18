@@ -36,3 +36,13 @@ export function updateRolers(data) {
         data
     })
 }
+
+//提交
+export function Commits(data) {
+    return request({
+        url: '/users/commit',
+        method: 'get',
+        data
+    })
+}
+

@@ -292,7 +292,7 @@ export default {
       this.deleteUser({ uid: id })
         .then(res => {
           this.$message({
-            message: res,
+            message: res, 
             center: true,
             type: "success"
           });
