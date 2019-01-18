@@ -46,7 +46,6 @@ Object.keys(filters).forEach(key => {
 Vue.filter('formateDate',function(value){
   let date = new Date();
   date.setTime(value);
-  console.log('value..', value, date);
    let year=date.getFullYear(),
    month=(date.getMonth()+1).toString().padStart(2,'0'),
    day=date.getDate().toString().padStart(2,'0'),

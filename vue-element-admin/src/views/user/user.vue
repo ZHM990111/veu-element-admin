@@ -4,12 +4,12 @@
       <el-table-column prop="id" label="ID" width="100"></el-table-column>
       <el-table-column label="头像" width="100">
         <template slot-scope="scope">
-          <img :src="scope.row.avatar" style="width:100%">
+          <img :src="scope.row.avatar" alt="" style="width: 100%">
         </template>
       </el-table-column>
       <el-table-column label="日期" width="100">
         <template slot-scope="scope">
-           <span>{{scope.row.create_time | formateDate}}</span>
+          <span>{{scope.row.create_time | formateDate}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="username" label="姓名" width="100"></el-table-column>
@@ -64,15 +64,14 @@
         >
           <el-input v-model="currentUser.username"></el-input>
         </el-form-item>
-        <el-form-item v-if="roltype=='edit'" label="头像" :label-width="formLabelWidth">
+        <el-form-item v-if="roltype=='edit'" label="头像">
           <el-upload
+            action="http://123.206.55.50:11000/upload"
             class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-success="uploadImgs"
             :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <img v-if="currentUser.avatar" :src="currentUser.avatar" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -228,6 +227,7 @@ export default {
             let {
               id,
               username,
+              avatar,
               profile,
               email,
               phone,
@@ -237,6 +237,7 @@ export default {
             this.updateUserInfo({
               id,
               username,
+              avatar,
               profile,
               email,
               phone,
@@ -304,6 +305,18 @@ export default {
             type: "error"
           });
         });
+    },
+    uploadImgs(res, file, fileList) {
+      console.log("res..", res, file, fileList);
+      if (res.code == 1) {
+        this.currentUser.avatar = res.data[0].path;
+      } else {
+        this.$message({
+          message: res.msg,
+          center: true,
+          type: "success"
+        });
+      }
     }
   }
 };
